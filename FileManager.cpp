@@ -5,19 +5,25 @@
 
 class FileManager
 {
-    void export_to_filestring(string filename,vector<vector<double>& data, ve)
+    void export_to_filestring(string filename,vector<vector<double>& data, vector<string>columns, vector<string> comments)
     {
         ofstream myfile
         myfile.open (filename);
 
       
-
-        myfile <<"# Keysight VSA IQ Data Export"<<endl;
-        myfile <<"# SampleRate = 1000000.0"<<endl;
-
-        myfile <<"# Format: Time(s),I,Q"<<endl;
-        myfile <<"Time(s),I,Q"<<endl<<endl;
-        myfile <<"0,1,0"<<endl<<endl;    
+        for( int i=0;i<comments.size(),i++)
+        {
+            if(comments[i]=="#")
+                myfile<<endl<<"#";
+            else
+                myfile<<comments[i]<<endl;
+        }
+            
+        
+        for( int i=0;i<columns.size(),i++)
+        {
+            myfile<<columns[i]<<",";
+        }
         
         for( int i=0;i<data.size(),i++)
         {
@@ -25,7 +31,7 @@ class FileManager
             {
                  myfile <<data[i][j]<<",";
                  
-            
+            6
             }
             myfile<<endl<<endl;
         }
