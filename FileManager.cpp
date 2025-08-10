@@ -6,7 +6,8 @@ using namespace std;
 
 class FileManager
 {
-    void export(string filename,vector<vector<double>>& data, vector<string>columns, vector<string> comments)
+    public: 
+    void export_func(string filename,vector<vector<double>>& data, vector<string>columns, vector<string> comments)
     {
         ofstream myfile ;
         myfile.open (filename);
@@ -38,14 +39,13 @@ class FileManager
   myfile.close();
     }
 
-    vector<vector<double>> import(string filename,istream& str)
+    public:
+     vector<vector<double>> import_func(string filename)
     {
-              /*vector<string>   result;
-                getline(str,line);*/
-
+              
                 vector<string> titles ;
-                vector<vector<double>> data;
-                ifstream input ("filename");
+                //vector<vector<double>> data;
+                ifstream input (filename);
                 string line;
                 double x;
                 int j = 0 ; //columns
@@ -61,9 +61,9 @@ class FileManager
                 }
                  
                 titles[0] = line ;
-                 
+                 int y=1;
                 //getting values of each column title 
-                 while(input>>titles[1]){
+                 while(input>>titles[y]){
                 noOfColumns += 1;
                 }
 
@@ -80,6 +80,7 @@ class FileManager
                     }
                 }
 
+                vector<vector<double>> data (500,vector <double> (noOfColumns));
                 while(!input.eof())
                 {
                   input >> data[i][j] ;
