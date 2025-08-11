@@ -11,9 +11,16 @@ using namespace std;
 
 void FileManager::export_func(std::string filename, vector<vector<double>> &data, vector<std::string> columns, vector<std::string> comments)
 {
-    // 1- check if the file path exists
+    
     ofstream myfile;
     myfile.open(filename);
+
+    if (!input.is_open())
+    {
+        cerr << "Could not open the file - '" << filename << "'" << endl;
+        return;
+        exit(EXIT_FAILURE);
+    }
 
     for (int i = 0; i < comments.size(); i++)
     {
@@ -111,6 +118,7 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                     parsed = "";
                     i++;
                     col++;
+                    
                 }
             }
         }
