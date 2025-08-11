@@ -10,7 +10,7 @@
 using namespace std;
 
 
-    void export_func(std::string filename,vector<vector<double>>& data, vector<std::string>columns, vector<std::string> comments)
+    void FileManager:: export_func(std::string filename,vector<vector<double>>& data, vector<std::string>columns, vector<std::string> comments)
     {
         // 1- check if the file path exists
         ofstream myfile ;
@@ -48,7 +48,7 @@ using namespace std;
     // 2- Check if the file exists in the given path or not
     
     // bool import_func(filename, outputs)
-     bool import_func(std::string filename,vector<vector<double>>&data,vector<std::string>& column,vector<std::string>& comments)
+         bool FileManager:: import_func(std::string filename,vector<vector<double>>&data,vector<std::string>& column,vector<std::string>& comments)
     {
               
                 //std::string headers ;

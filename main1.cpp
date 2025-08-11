@@ -30,4 +30,15 @@ int main()
 
     filem.export_func("trial.csv",data, columns, comments);
 
+ 
+    vector<vector<double>> data2;
+    vector<string>columns2;
+    vector<string> comments2;
+
+
+
+   bool import_func= filem.import_func("/.trial_write.csv",data2,columns2,comments2);
+
+   cout<<import_func;
+
 }
