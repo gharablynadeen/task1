@@ -37,7 +37,7 @@ int main()
 
 
 
-   bool import_func= filem.import_func("/.trial_write.csv",data2,columns2,comments2);
+   bool import_func= filem.import_func("D:/Internship/Siemens/task1/task1/trial.csv",data2,columns2,comments2);
 
    cout<<import_func;
 

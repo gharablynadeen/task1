@@ -10,7 +10,7 @@
 using namespace std;
 
 
-    void FileManager:: export_func(std::string filename,vector<vector<double>>& data, vector<std::string>columns, vector<std::string> comments)
+    void FileManager::export_func(std::string filename,vector<vector<double>>& data, vector<std::string>columns, vector<std::string> comments)
     {
         // 1- check if the file path exists
         ofstream myfile ;
@@ -29,8 +29,9 @@ using namespace std;
         for( int i=0;i<columns.size();i++)
         {
             myfile<<columns[i]<<",";
+            
         }
-        cout<<endl;
+        myfile<<endl;
         
         for( int i=0;i<data.size();i++)
         {
@@ -48,7 +49,7 @@ using namespace std;
     // 2- Check if the file exists in the given path or not
     
     // bool import_func(filename, outputs)
-         bool FileManager:: import_func(std::string filename,vector<vector<double>>&data,vector<std::string>& column,vector<std::string>& comments)
+         bool FileManager::import_func(std::string filename,vector<vector<double>>&data,vector<std::string>& column,vector<std::string>& comments)
     {
               
                 //std::string headers ;
@@ -59,7 +60,7 @@ using namespace std;
                 if (!input.is_open()) {
             cerr << "Could not open the file - '" << filename << "'" << endl;
                     return false;
-                    exit(EXIT_FAILURE);
+                    //exit(EXIT_FAILURE);
                 }
 
                 if (input.peek() == ifstream::traits_type::eof()) {
@@ -74,14 +75,14 @@ using namespace std;
                 {
                     if(line[0]=='#')
                 {
-                    comments[i]=line;
+                    comments.push_back(line);
                 }
                 else if(!isdigit(line[0]))
                 {
                     std::string parsed="";
                     for(int i=0;i<line.size();i++)
                     {
-                        if(!line[i]==',')
+                        if(line[i]!=',')
                         {
                             parsed+=line[i];
                         }
@@ -97,7 +98,7 @@ using namespace std;
                     std::string parsed="";
                     for(int j=0;j<line.size();j++)
                     {
-                        if(!line[j]==',')
+                        if(line[j]!=',')
                         {
                             parsed+=line[j];
                         }
