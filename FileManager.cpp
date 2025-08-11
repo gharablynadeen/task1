@@ -1,14 +1,18 @@
+
+#include <iostream>
+#include<vector>
+#include<string>
 #include<iostream>
 #include<vector>
 #include<string>
 #include<fstream>
+#include "FileManager.h"
 using namespace std;
 
-class FileManager
-{
-    public: 
-    void export_func(string filename,vector<vector<double>>& data, vector<string>columns, vector<string> comments)
+
+    void export_func(std::string filename,vector<vector<double>>& data, vector<std::string>columns, vector<std::string> comments)
     {
+        // 1- check if the file path exists
         ofstream myfile ;
         myfile.open (filename);
 
@@ -26,10 +30,11 @@ class FileManager
         {
             myfile<<columns[i]<<",";
         }
+        cout<<endl;
         
         for( int i=0;i<data.size();i++)
         {
-            for(int j=0;i<data[0].size();j++)
+            for(int j=0;j<data[i].size();j++)
             {
                  myfile <<data[i][j]<<",";
             }
@@ -39,63 +44,87 @@ class FileManager
   myfile.close();
     }
 
-    public:
-     vector<vector<double>> import_func(string filename)
+    // 1- Modify parameters to take the full file path
+    // 2- Check if the file exists in the given path or not
+    
+    // bool import_func(filename, outputs)
+     bool import_func(std::string filename,vector<vector<double>>&data,vector<std::string>& column,vector<std::string>& comments)
     {
               
-                vector<string> titles ;
+                //std::string headers ;
                 //vector<vector<double>> data;
+                int col=0;
                 ifstream input (filename);
-                string line;
-                double x;
-                int j = 0 ; //columns
-                int i = 0; //rows
-                int noOfColumns = 1;
-
-                input>> line ;
-
-                while (line == "#"){
-                     getline (input, line);
-                     cout<<"#"<<line;
-                     input>>line;
-                }
-                 
-                titles[0] = line ;
-                 int y=1;
-                //getting values of each column title 
-                 while(input>>titles[y]){
-                noOfColumns += 1;
+                int i=0;//rows for data vector
+                if (!input.is_open()) {
+            cerr << "Could not open the file - '" << filename << "'" << endl;
+                    return false;
+                    exit(EXIT_FAILURE);
                 }
 
-                //cout values of each column title 
-                for(x=0;x<noOfColumns;x++){
-                    cout<<titles[x];
-                    if(x<noOfColumns-1)
-                    {
-                        cout<<",";
-                    }
-                    else 
-                    {
-                     cout<<endl<<endl;
-                    }
+                if (input.peek() == ifstream::traits_type::eof()) {
+                        cout << "File is empty.";
+                     return false;
                 }
 
-                vector<vector<double>> data (500,vector <double> (noOfColumns));
-                while(!input.eof())
+                std::string line;
+
+               // getline(input,line);
+                while(getline(input,line))
                 {
-                  input >> data[i][j] ;
-                  if(j==noOfColumns-1){
-                  cout<<data[i][j]<<endl<<endl;
-                  i++;
-                  j=0;
-                  }
-                  else{
-                  cout<<data[i][j]<<",";
-                  j++;
+                    if(line[0]=='#')
+                {
+                    comments[i]=line;
                 }
-            }
+                else if(!isdigit(line[0]))
+                {
+                    std::string parsed="";
+                    for(int i=0;i<line.size();i++)
+                    {
+                        if(!line[i]==',')
+                        {
+                            parsed+=line[i];
+                        }
+                        else
+                        column.push_back(parsed);
+                        parsed="";
 
-             input.close();   
+                    }
+                }
+                else
+                {
 
-    }
-};
+                    std::string parsed="";
+                    for(int j=0;j<line.size();j++)
+                    {
+                        if(!line[j]==',')
+                        {
+                            parsed+=line[j];
+                        }
+                        else
+                        {
+                            
+                            col<column.size()? col=col: col=0;
+                        data[i][col]=stod(parsed);
+                        parsed="";
+                        i++;
+                        col++;
+                        }       
+                    }
+    
+                }
+                return true;
+                
+
+
+}
+
+
+  }
+
+
+
+
+
+
+
