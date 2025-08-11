@@ -29,7 +29,7 @@ FileManager.o: FileManager.cpp FileManager.h
 	$(CXX) $(CXXFLAGS) -c FileManager.cpp
 
 run: a.exe
-	a.exe
+	./a.exe
 
 clean:
 	- if exist a.exe del /Q a.exe
