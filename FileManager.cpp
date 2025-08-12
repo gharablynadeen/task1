@@ -52,7 +52,6 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
     // vector<vector<double>> data;
     int col = 0;
     ifstream input(filename);
-    int i = 0; // rows for data vector
     if (!input.is_open())
     {
         cerr << "Could not open the file - '" << filename << "'" << endl;

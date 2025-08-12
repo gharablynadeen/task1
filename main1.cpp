@@ -16,16 +16,16 @@ int main()
 
         {2.0006, 0.309016994, 0.951056516}};
 
-    vector<string> columns = {"hi", "bye", "ok"};
+    vector<string> columns = {"it", "is", "done"};
     vector<string> comments = {"# I hope all is well", "# I also hope all is well"};
 
     FileManager filem;
 
-    filem.export_func("D:/Internship/Siemens/task1/task1/trial.csv", data, columns, comments);
+    filem.export_func("C:/Users/Nadeen/Documents/GitHub/task1/trial.csv", data, columns, comments);
 
     vector<vector<double>> data2;
     vector<string> columns2;
     vector<string> comments2;
-    bool import_func = filem.import_func("D:/Internship/Siemens/task1/task1/trial.csv", data2, columns2, comments2)
+    bool import_func = filem.import_func("C:/Users/Nadeen/Documents/GitHub/task1/trial.csv", data2, columns2, comments2);
     cout << import_func;
 }
