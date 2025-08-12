@@ -21,13 +21,11 @@ int main()
 
     FileManager filem;
 
-    filem.export_func("trial.csv", data, columns, comments);
+    filem.export_func("D:/Internship/Siemens/task1/task1/trial.csv", data, columns, comments);
 
     vector<vector<double>> data2;
     vector<string> columns2;
     vector<string> comments2;
-
-    bool import_func = filem.import_func("D:/Internship/Siemens/task1/task1/trial.csv", data2, columns2, comments2);
-
+    bool import_func = filem.import_func("D:/Internship/Siemens/task1/task1/trial.csv", data2, columns2, comments2)
     cout << import_func;
 }

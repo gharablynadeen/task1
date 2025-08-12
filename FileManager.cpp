@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -10,17 +9,9 @@
 using namespace std;
 
 void FileManager::export_func(std::string filename, vector<vector<double>> &data, vector<std::string> columns, vector<std::string> comments)
-{
-    
+{    // 1- check if the file path exists
     ofstream myfile;
     myfile.open(filename);
-
-    if (!input.is_open())
-    {
-        cerr << "Could not open the file - '" << filename << "'" << endl;
-        return;
-        exit(EXIT_FAILURE);
-    }
 
     for (int i = 0; i < comments.size(); i++)
     {
@@ -69,15 +60,15 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
         exit(EXIT_FAILURE);
     }
 
-    if (input.peek() == ifstream::traits_type::eof())
+    if (input.peek() == ifstream::traits_type::eof()) //next to read (which is first to read) is nothing 
     {
         cout << "File is empty.";
         return false;
     }
 
     std::string line;
+    vector<double> row;
 
-    // getline(input,line);
     while (getline(input, line))
     {
         if (line[0] == '#')
@@ -112,16 +103,26 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                 }
                 else
                 {
-
-                    col < column.size() ? col = col : col = 0;
-                    data[i][col] = stod(parsed);
-                    parsed = "";
-                    i++;
-                    col++;
-                    
+                    if(col<column.size()){
+                    row.push_back(stod(parsed));
+                    col++;  
+                    }
+                    else{
+                        data.push_back(row);
+                        row.clear();
+                        col = 0;
+                    }                  
                 }
             }
-        }
+        } 
+        input.close();
         return true;
     }
 }
+
+
+
+
+
+
+
