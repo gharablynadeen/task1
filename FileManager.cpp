@@ -9,7 +9,7 @@
 using namespace std;
 
 void FileManager::export_func(std::string filename, vector<vector<double>> &data, vector<std::string> columns, vector<std::string> comments)
-{    // 1- check if the file path exists
+{ // 1- check if the file path exists
     ofstream myfile;
     myfile.open(filename);
 
@@ -34,8 +34,7 @@ void FileManager::export_func(std::string filename, vector<vector<double>> &data
         {
             myfile << data[i][j] << ",";
         }
-        myfile << endl
-               << endl;
+        
     }
 
     myfile.close();
@@ -59,7 +58,7 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
         exit(EXIT_FAILURE);
     }
 
-    if (input.peek() == ifstream::traits_type::eof()) //next to read (which is first to read) is nothing 
+    if (input.peek() == ifstream::traits_type::eof()) // next to read (which is first to read) is nothing
     {
         cout << "File is empty.";
         return false;
@@ -68,8 +67,10 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
     std::string line;
     vector<double> row;
 
-    while (getline(input, line))
+    while (getline(input, line) || !(input.eof()))
     {
+        if (line.empty())
+            continue; // skip empty lines
         if (line[0] == '#')
         {
             comments.push_back(line);
@@ -79,15 +80,18 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
             std::string parsed = "";
             for (int i = 0; i < line.size(); i++)
             {
-                if (line[i] != ',')
+                if (line[i] == ','||line[i] == '\n' || line[i] == '\r')
                 {
-                    parsed += line[i];
+                  column.push_back(parsed);
+                    parsed = "";   
                 }
                 else
                 {
-                    column.push_back(parsed);
-                    parsed = "";
+                   
+
+                    parsed += line[i];
                 }
+
             }
         }
         else
@@ -102,26 +106,27 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                 }
                 else
                 {
-                    if(col<column.size()){
-                    row.push_back(stod(parsed));
-                    col++;  
-                    }
-                    else{
+                    
+                    
+                        row.push_back(stod(parsed));
+                        col++;
+                        parsed = "";
+                    
+                    if (col >= column.size())
+                    {
                         data.push_back(row);
                         row.clear();
+                        //row.push_back(stod(parsed));
                         col = 0;
-                    }                  
+                        parsed = "";
+                    }
                 }
             }
-        } 
-        input.close();
-        return true;
+        }
+
     }
+    
+    input.close();
+    return true;
 }
-
-
-
-
-
-
-
+    
