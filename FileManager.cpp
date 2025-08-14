@@ -130,88 +130,80 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
     return true;
 }
 
-bool FileManager::comment_extraction(vector<std::string> &comments,vector<unordered_map<string, std::variant>> &extracted )
+bool FileManager::comment_extraction(vector<std::string> &comments, unordered_map<std::string, std::variant<int, double, std::string>> &extracted )
 {
-    if(comments.empty())
+    if (comments.empty())
     {
         cout << "No comments found." << endl;
         return false;
     }
 
-
     for (int i = 0; i < comments.size(); i++)
 
-    
     {
         int position = comments[i].find('=');
         if (position == std::string::npos) // if '=' is not found in the comment
-            continue; // skip this comment
+            continue;                      // skip this comment
 
-            int leftpointer = position - 1;
-            int rightpointer = position + 1;
-            bool second_space_left= false;
-            bool second_space_right=false;
+        int leftpointer = position - 1;
+        int rightpointer = position + 1;
+        bool second_space_left = false;
+        bool second_space_right = false;
 
-            bool first_char_left= false;
-            bool first_char_right=false;
-            string key = "";
-            string value = "";
+        bool first_char_left = false;
+        bool first_char_right = false;
+        string key = "";
+        string value = "";
 
-            while (leftpointer >= 0 && !second_space_left)
+        while (leftpointer > 0 && !second_space_left)
+        {
+            comments[i][leftpointer] == ' ' ? first_char_left = false : first_char_left = true;
+
+            if (comments[i][leftpointer] != ' ' && !second_space_left)
             {
-                comments[i][leftpointer] != ' ' ? first_char_left = true : first_char_left = false;
-
-                if (comments[i][leftpointer] != ' ')
-                {
-                    key = comments[i][leftpointer] + key;
-                    first_char_left = true;
-                     leftpointer--;
-                }
-
-                else if (first_char_left && comments[i][leftpointer] == ' ')
-                {
-                    second_space_left = true;
-                }   
-                
-                else
-                {
-                    leftpointer--;
-                }
-               
+                key = comments[i][leftpointer] + key;
+                first_char_left = true;
+                leftpointer--;
             }
 
-             while (rightpointer < comments[i].size() && !second_space_right)
+            else if (first_char_left && comments[i][leftpointer] == ' ')
             {
-                comments[i][rightpointer] != ' ' ? first_char_right = true : first_char_right = false;
-
-                if (comments[i][leftpointer] != ' ')
-                {
-                    value = comments[i][rightpointer] + value;
-                    first_char_right = true;
-                     rightpointer++;
-                }
-
-                else if (first_char_right && comments[i][rightpointer] == ' ')
-                {
-                    second_space_right = true;
-                }   
-                
-                else
-                {
-                    rightpointer++;
-                }
-               
+                second_space_left = true;
+                leftpointer--;
             }
 
-
-            
+            else
+            {
+                leftpointer--;
+            }
         }
+
+        while (rightpointer < comments[i].size() && !second_space_right)
+        {
+            comments[i][rightpointer] != ' ' ? first_char_right = true : first_char_right = false;
+
+            if (comments[i][rightpointer] != ' ')
+            {
+                value = comments[i][rightpointer] + value;
+                first_char_right = true;
+                rightpointer++;
+            }
+
+            else if (first_char_right && comments[i][rightpointer] == ' ')
+            {
+                second_space_right = true;
+            }
+
+            else
+            {
+                rightpointer++;
+            }
+        }
+        if (value.empty() || key.empty())
+            continue;
+        std::reverse(value.begin(), value.end());
+        extracted[key] = value;
     }
-
-
-
-    
-        
-    
     return true;
 }
+

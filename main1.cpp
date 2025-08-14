@@ -49,4 +49,18 @@ int main()
     }
 
     cout << import_func;
+
+    unordered_map<string, std::variant<int, double, std::string>> extracted;
+    bool extraction = filem.comment_extraction(comments2, extracted);
+
+
+     cout << "--------------------------------------------------------------------------" << endl;
+    for (auto& [key, value] : extracted) {
+    std::cout << key << ": ";
+    std::visit([](auto&& arg) { std::cout << arg; }, value);
+    std::cout << "\n";
+}
+
+
+
 }
