@@ -150,55 +150,90 @@ bool FileManager::comment_extraction(vector<std::string> &comments, unordered_ma
         bool second_space_left = false;
         bool second_space_right = false;
 
-        bool first_char_left = false;
-        bool first_char_right = false;
+        bool reached_word_left = false;
+        bool reached_word_right = false;
         string key = "";
         string value = "";
 
+        comments[i][leftpointer] == ' ' ? reached_word_left = false : reached_word_left = true;
+        comments[i][rightpointer] == ' ' ? reached_word_right = false : reached_word_right = true;
+
         while (leftpointer > 0 && !second_space_left)
         {
-            comments[i][leftpointer] == ' ' ? first_char_left = false : first_char_left = true;
 
-            if (comments[i][leftpointer] != ' ' && !second_space_left)
+
+            if (comments[i][leftpointer] == ' ' && !reached_word_left)
             {
-                key = comments[i][leftpointer] + key;
-                first_char_left = true;
                 leftpointer--;
             }
 
-            else if (first_char_left && comments[i][leftpointer] == ' ')
+            else if (comments[i][leftpointer] == ' ' && reached_word_left)
             {
                 second_space_left = true;
                 leftpointer--;
             }
 
-            else
+            else if (comments[i][leftpointer] != ' '&& !reached_word_left)
             {
+                key = comments[i][leftpointer] + key;
+                reached_word_left = true;
                 leftpointer--;
             }
+            else if (reached_word_left && comments[i][leftpointer] != ' ')
+            {
+                key = comments[i][leftpointer] + key;
+                leftpointer--;
+            }
+           
+           
+            // This part is commented out because it was not functioning as intended
+
+            // if (comments[i][leftpointer] != ' ' && !second_space_left)
+            // {
+            //     key = comments[i][leftpointer] + key;
+            //     reached_word_left = true;
+            //     leftpointer--;
+            // }
+
+            // else if (reached_word_left && comments[i][leftpointer] == ' ')
+            // {
+            //     second_space_left = true;
+            //     leftpointer--;
+            // }
+
+            // else
+            // {
+            //     leftpointer--;
+            // }
         }
 
-        while (rightpointer < comments[i].size() && !second_space_right)
+       while (rightpointer > 0 && !second_space_right)
         {
-            comments[i][rightpointer] != ' ' ? first_char_right = true : first_char_right = false;
 
-            if (comments[i][rightpointer] != ' ')
+
+            if (comments[i][rightpointer] == ' ' && !reached_word_right)
             {
-                value = comments[i][rightpointer] + value;
-                first_char_right = true;
                 rightpointer++;
             }
 
-            else if (first_char_right && comments[i][rightpointer] == ' ')
+            else if (comments[i][rightpointer] == ' ' && reached_word_right)
             {
                 second_space_right = true;
-            }
-
-            else
-            {
                 rightpointer++;
             }
-        }
+
+            else if (comments[i][rightpointer] != ' '&& !reached_word_right)
+            {
+                key = comments[i][rightpointer] + key;
+                reached_word_right = true;
+                rightpointer++;
+            }
+            else if (reached_word_right && comments[i][rightpointer] != ' ')
+            {
+                key = comments[i][rightpointer] + key;
+                rightpointer++;
+            }
+
         if (value.empty() || key.empty())
             continue;
         std::reverse(value.begin(), value.end());
