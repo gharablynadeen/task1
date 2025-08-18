@@ -54,7 +54,7 @@ int main()
     bool extraction = filem.comment_extraction(comments2, extracted);
 
 
-     cout << "--------------------------------------------------------------------------" << endl;
+     cout <<endl<< "--------------------------------------------------------------------------" << endl<<extraction << endl;
     for (auto& [key, value] : extracted) {
     std::cout << key << ": ";
     std::visit([](auto&& arg) { std::cout << arg; }, value);

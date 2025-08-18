@@ -40,15 +40,9 @@ void FileManager::export_func(std::string filename, vector<vector<double>> &data
     myfile.close();
 }
 
-// 1- Modify parameters to take the full file path
-// 2- Check if the file exists in the given path or not
-
-// bool import_func(filename, outputs)
 bool FileManager::import_func(std::string filename, vector<vector<double>> &data, vector<std::string> &column, vector<std::string> &comments)
 {
 
-    // std::string headers ;
-    // vector<vector<double>> data;
     int col = 0;
     ifstream input(filename);
     if (!input.is_open())
@@ -66,7 +60,7 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
 
     std::string line;
     vector<double> row;
-
+    bool after_comments = false;
     while (getline(input, line) || !(input.eof()))
     {
         if (line.empty())
@@ -74,11 +68,14 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
         if (line[0] == '#')
         {
             comments.push_back(line);
+            continue;
         }
-        else if (!isdigit(line[0]))
+
+        else if (!after_comments)
         {
             std::string parsed = "";
-            for (int i = 0; i < line.size(); i++)
+            int i =0 ;
+            for (i ; i < line.size(); i++)
             {
                 if (line[i] == ','||line[i] == '\n' || line[i] == '\r')
                 {
@@ -87,13 +84,17 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                 }
                 else
                 {
-                   
-
                     parsed += line[i];
                 }
-
+                
             }
-        }
+            if (i == line.size() )
+                {
+                    column.push_back(parsed);
+                }
+            after_comments = true; // we have read the comments and columns
+            }
+        
         else
         {
 
@@ -106,8 +107,6 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                 }
                 else
                 {
-                    
-                    
                         row.push_back(stod(parsed));
                         col++;
                         parsed = "";
@@ -116,7 +115,6 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                     {
                         data.push_back(row);
                         row.clear();
-                        //row.push_back(stod(parsed));
                         col = 0;
                         parsed = "";
                     }
@@ -138,19 +136,19 @@ bool FileManager::comment_extraction(vector<std::string> &comments, unordered_ma
         return false;
     }
 
-    for (int i = 0; i < comments.size(); i++)
+    for (int i = 0; i < comments.size(); i++) //hayakhod comments men 0 l i-1
 
     {
         int position = comments[i].find('=');
         if (position == std::string::npos) // if '=' is not found in the comment
             continue;                      // skip this comment
 
-        int leftpointer = position - 1;
+        int leftpointer = position - 1; 
         int rightpointer = position + 1;
-        bool second_space_left = false;
+        bool second_space_left = false; // flags when the whole word is parsed 
         bool second_space_right = false;
 
-        bool reached_word_left = false;
+        bool reached_word_left = false; //flags when first character of the word is reached
         bool reached_word_right = false;
         string key = "";
         string value = "";
@@ -170,7 +168,7 @@ bool FileManager::comment_extraction(vector<std::string> &comments, unordered_ma
             else if (comments[i][leftpointer] == ' ' && reached_word_left)
             {
                 second_space_left = true;
-                leftpointer--;
+                // key = comments[i][leftpointer] + key; // check extra space
             }
 
             else if (comments[i][leftpointer] != ' '&& !reached_word_left)
@@ -180,34 +178,17 @@ bool FileManager::comment_extraction(vector<std::string> &comments, unordered_ma
                 leftpointer--;
             }
             else if (reached_word_left && comments[i][leftpointer] != ' ')
-            {
+             {
                 key = comments[i][leftpointer] + key;
                 leftpointer--;
             }
            
            
-            // This part is commented out because it was not functioning as intended
-
-            // if (comments[i][leftpointer] != ' ' && !second_space_left)
-            // {
-            //     key = comments[i][leftpointer] + key;
-            //     reached_word_left = true;
-            //     leftpointer--;
-            // }
-
-            // else if (reached_word_left && comments[i][leftpointer] == ' ')
-            // {
-            //     second_space_left = true;
-            //     leftpointer--;
-            // }
-
-            // else
-            // {
-            //     leftpointer--;
-            // }
         }
 
-       while (rightpointer > 0 && !second_space_right)
+
+
+       while (rightpointer > position && !second_space_right)
         {
 
 
@@ -216,29 +197,32 @@ bool FileManager::comment_extraction(vector<std::string> &comments, unordered_ma
                 rightpointer++;
             }
 
-            else if (comments[i][rightpointer] == ' ' && reached_word_right)
+           else if ((comments[i][rightpointer] == ' '  || comments[i][rightpointer] == '\n' || comments[i][rightpointer] == '\r' ||comments[i][rightpointer] == '\000') && reached_word_right)
             {
                 second_space_right = true;
-                rightpointer++;
+                std::reverse(value.begin(), value.end());
+                 extracted[key] = value;
             }
 
             else if (comments[i][rightpointer] != ' '&& !reached_word_right)
             {
-                key = comments[i][rightpointer] + key;
+                value = comments[i][rightpointer] + value;
                 reached_word_right = true;
                 rightpointer++;
             }
+
             else if (reached_word_right && comments[i][rightpointer] != ' ')
             {
-                key = comments[i][rightpointer] + key;
+                value = comments[i][rightpointer] + value;
                 rightpointer++;
             }
 
         if (value.empty() || key.empty())
             continue;
-        std::reverse(value.begin(), value.end());
-        extracted[key] = value;
     }
-    return true;
+
+
+}
+return true;
 }
 
