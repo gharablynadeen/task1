@@ -5,6 +5,7 @@
 # rate  of       change =           200
 # done= 100
 # Format: Time(s), I, Q
+# velocity = 20000       m/s
 Time (s),I,Q
 
 0.0,1.0,0.0

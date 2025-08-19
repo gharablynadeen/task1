@@ -8,93 +8,91 @@
 #include "FileManager.h"
 using namespace std;
 
-void FileManager::export_func(std::string filename, vector<vector<double>> &data, vector<std::string> columns, vector<std::string> comments)
-{ // 1- check if the file path exists
-    ofstream myfile;
-    myfile.open(filename);
+void FileManager::exportFunction(std::string fileName, vector<vector<double>> &data, vector<std::string> columns, vector<std::string> comments)
+{
+    ofstream myFile;
+    myFile.open(fileName);
 
     for (int i = 0; i < comments.size(); i++)
     {
         if (comments[i] == "#")
-            myfile << endl
+            myFile << endl
                    << "#";
         else
-            myfile << comments[i] << endl;
+            myFile << comments[i] << endl;
     }
 
     for (int i = 0; i < columns.size(); i++)
     {
-        myfile << columns[i] << ",";
+        myFile << columns[i] << ",";
     }
-    myfile << endl;
+    myFile << endl;
 
     for (int i = 0; i < data.size(); i++)
     {
         for (int j = 0; j < data[i].size(); j++)
         {
-            myfile << data[i][j] << ",";
+            myFile << data[i][j] << ",";
         }
-        
     }
 
-    myfile.close();
+    myFile.close();
 }
 
-bool FileManager::import_func(std::string filename, vector<vector<double>> &data, vector<std::string> &column, vector<std::string> &comments)
-{
 
+
+bool FileManager::importFunction(std::string fileName, vector<vector<double>> &data, vector<std::string> &column, vector<std::string> &comments)
+{
     int col = 0;
-    ifstream input(filename);
+    ifstream input(fileName);
     if (!input.is_open())
     {
-        cerr << "Could not open the file - '" << filename << "'" << endl;
+        cerr << "Could not open the file - '" << fileName << "'" << endl;
         return false;
         exit(EXIT_FAILURE);
     }
 
-    if (input.peek() == ifstream::traits_type::eof()) // next to read (which is first to read) is nothing
+    if (input.peek() == ifstream::traits_type::eof())
     {
         cout << "File is empty.";
         return false;
     }
-
     std::string line;
     vector<double> row;
-    bool after_comments = false;
+    bool afterComments = false;
     while (getline(input, line) || !(input.eof()))
     {
         if (line.empty())
-            continue; // skip empty lines
+            continue;
         if (line[0] == '#')
         {
             comments.push_back(line);
             continue;
         }
 
-        else if (!after_comments)
+        else if (!afterComments)
         {
             std::string parsed = "";
-            int i =0 ;
-            for (i ; i < line.size(); i++)
+            int i = 0;
+            for (i; i < line.size(); i++)
             {
-                if (line[i] == ','||line[i] == '\n' || line[i] == '\r')
+                if (line[i] == ',' || line[i] == '\n' || line[i] == '\r')
                 {
-                  column.push_back(parsed);
-                    parsed = "";   
+                    column.push_back(parsed);
+                    parsed = "";
                 }
                 else
                 {
                     parsed += line[i];
                 }
-                
             }
-            if (i == line.size() )
-                {
-                    column.push_back(parsed);
-                }
-            after_comments = true; // we have read the comments and columns
+            if (i == line.size())
+            {
+                column.push_back(parsed);
             }
-        
+            afterComments = true;
+        }
+
         else
         {
 
@@ -107,10 +105,10 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                 }
                 else
                 {
-                        row.push_back(stod(parsed));
-                        col++;
-                        parsed = "";
-                    
+                    row.push_back(stod(parsed));
+                    col++;
+                    parsed = "";
+
                     if (col >= column.size())
                     {
                         data.push_back(row);
@@ -121,14 +119,15 @@ bool FileManager::import_func(std::string filename, vector<vector<double>> &data
                 }
             }
         }
-
     }
-    
+
     input.close();
     return true;
 }
 
-bool FileManager::comment_extraction(vector<std::string> &comments, unordered_map<std::string, std::variant<int, double, std::string>> &extracted )
+
+
+bool FileManager::commentExtraction(vector<std::string> &comments, unordered_map<std::string, std::variant<int, double, std::string>> &extracted)
 {
     if (comments.empty())
     {
@@ -136,93 +135,83 @@ bool FileManager::comment_extraction(vector<std::string> &comments, unordered_ma
         return false;
     }
 
-    for (int i = 0; i < comments.size(); i++) //hayakhod comments men 0 l i-1
+    for (int i = 0; i < comments.size(); i++)
 
     {
         int position = comments[i].find('=');
-        if (position == std::string::npos) // if '=' is not found in the comment
-            continue;                      // skip this comment
+        if (position == std::string::npos)
+            continue;
 
-        int leftpointer = position - 1; 
-        int rightpointer = position + 1;
-        bool second_space_left = false; // flags when the whole word is parsed 
-        bool second_space_right = false;
+        int leftPointer = position - 1;
+        int rightPointer = position + 1;
+        bool secondSpaceLeft = false;
+        bool secondSpaceRight = false;
 
-        bool reached_word_left = false; //flags when first character of the word is reached
-        bool reached_word_right = false;
+        bool reachedWordLeft = false;
+        bool reachedWordRight = false;
         string key = "";
         string value = "";
 
-        comments[i][leftpointer] == ' ' ? reached_word_left = false : reached_word_left = true;
-        comments[i][rightpointer] == ' ' ? reached_word_right = false : reached_word_right = true;
+        comments[i][leftPointer] == ' ' ? reachedWordLeft = false : reachedWordLeft = true;
+        comments[i][rightPointer] == ' ' ? reachedWordRight = false : reachedWordRight = true;
 
-        while (leftpointer > 0 && !second_space_left)
+        while (leftPointer > 0 && !secondSpaceLeft)
         {
 
-
-            if (comments[i][leftpointer] == ' ' && !reached_word_left)
+            if (comments[i][leftPointer] == ' ' && !reachedWordLeft)
             {
-                leftpointer--;
-            }
-
-            else if (comments[i][leftpointer] == ' ' && reached_word_left)
-            {
-                second_space_left = true;
-                // key = comments[i][leftpointer] + key; // check extra space
+                leftPointer--;
             }
 
-            else if (comments[i][leftpointer] != ' '&& !reached_word_left)
+            else if (comments[i][leftPointer] == ' ' && reachedWordLeft)
             {
-                key = comments[i][leftpointer] + key;
-                reached_word_left = true;
-                leftpointer--;
+                secondSpaceLeft = true;
             }
-            else if (reached_word_left && comments[i][leftpointer] != ' ')
-             {
-                key = comments[i][leftpointer] + key;
-                leftpointer--;
+
+            else if (comments[i][leftPointer] != ' ' && !reachedWordLeft)
+            {
+                key = comments[i][leftPointer] + key;
+                reachedWordLeft = true;
+                leftPointer--;
             }
-           
-           
+            else if (reachedWordLeft && comments[i][leftPointer] != ' ')
+            {
+                key = comments[i][leftPointer] + key;
+                leftPointer--;
+            }
         }
 
-
-
-       while (rightpointer > position && !second_space_right)
+        while (rightPointer > position && !secondSpaceRight)
         {
 
-
-            if (comments[i][rightpointer] == ' ' && !reached_word_right)
+            if (comments[i][rightPointer] == ' ' && !reachedWordRight)
             {
-                rightpointer++;
+                rightPointer++;
             }
 
-           else if ((comments[i][rightpointer] == ' '  || comments[i][rightpointer] == '\n' || comments[i][rightpointer] == '\r' ||comments[i][rightpointer] == '\000') && reached_word_right)
+            else if ((comments[i][rightPointer] == ' ' || comments[i][rightPointer] == '\n' || comments[i][rightPointer] == '\r' || comments[i][rightPointer] == '\000') && reachedWordRight)
             {
-                second_space_right = true;
+                secondSpaceRight = true;
                 std::reverse(value.begin(), value.end());
-                 extracted[key] = value;
+                extracted[key] = value;
             }
 
-            else if (comments[i][rightpointer] != ' '&& !reached_word_right)
+            else if (comments[i][rightPointer] != ' ' && !reachedWordRight)
             {
-                value = comments[i][rightpointer] + value;
-                reached_word_right = true;
-                rightpointer++;
+                value = comments[i][rightPointer] + value;
+                reachedWordRight = true;
+                rightPointer++;
             }
 
-            else if (reached_word_right && comments[i][rightpointer] != ' ')
+            else if (reachedWordRight && comments[i][rightPointer] != ' ')
             {
-                value = comments[i][rightpointer] + value;
-                rightpointer++;
+                value = comments[i][rightPointer] + value;
+                rightPointer++;
             }
 
-        if (value.empty() || key.empty())
-            continue;
+            if (value.empty() || key.empty())
+                continue;
+        }
     }
-
-
+    return true;
 }
-return true;
-}
-
