@@ -31,10 +31,12 @@ clean:
 
 GTEST_DIR := third_party/googletest/googletest
 GTEST_INC := $(GTEST_DIR)/include
-GTEST_SRC := $(GTEST_DIR)/src/gtest-all.cc   # NOTE: no gtest_main.cc (you provide main1.cpp)
+GTEST_SRC := $(GTEST_DIR)/src/gtest-all.cc
 
-# keep your earlier CXX/CXXFLAGS lines; just add the include for gtest
-CXXFLAGS += -I$(GTEST_INC)
+
+CXXFLAGS += -I$(GTEST_INC) -I$(GTEST_DIR)
+
+
 # If MinGW warns about -pthread, just delete the next line:
 LDFLAGS  += -pthread
 
