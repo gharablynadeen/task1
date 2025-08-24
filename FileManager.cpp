@@ -134,10 +134,22 @@ bool FileManager::commentExtraction(vector<std::string> &comments, unordered_map
         cout << "No comments found." << endl;
         return false;
     }
+    
 
+    
+    int equalsCount = 0;
     for (int i = 0; i < comments.size(); i++)
 
     {
+        for(int j=0; j<comments[i].size(); j++){
+            if(comments[i][j]=='='){
+                equalsCount++;
+                if(equalsCount>1){
+                    cout<<"Multiple '=' found in comment line: "+comments[i]<<endl;
+                    return false;
+                }
+            }
+        }
         int position = comments[i].find('=');
         if (position == std::string::npos)
             continue;
