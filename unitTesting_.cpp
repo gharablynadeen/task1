@@ -34,5 +34,20 @@ TEST(fileManagerTest, exportFunctionTest) {
     //inputFile.close();
 }
 TEST(fileManagerTest, importFunctionTest) {
+    FileManager fm;
+    vector<vector<double>> data;
+    vector<string> columns;
+    vector<string> comments;
+    bool result = fm.importFunction("vsa_sample_iq_data.csv", data, columns, comments);
+    EXPECT_TRUE(result);
+    EXPECT_FALSE(data.empty());
+    EXPECT_FALSE(columns.empty());
+    EXPECT_FALSE(comments.empty());
+    EXPECT_EQ(columns.size(), 4); // Assuming there are 4 columns in the CSV
+    EXPECT_EQ(data.size(), 100); // Assuming there are 100 rows of data in the CSV
+
+}
+
+TEST(fileManagerTest, extractFunctionTest){
 
 }
