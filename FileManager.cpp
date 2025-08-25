@@ -152,7 +152,7 @@ bool FileManager::commentExtraction(vector<std::string> &comments, unordered_map
                 }
             }
         }
-        if(badline)
+        if(badLine)
             continue;
         
         int position = comments[i].find('=');
